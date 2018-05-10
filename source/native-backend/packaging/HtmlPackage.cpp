@@ -4,8 +4,10 @@
 
 #include "native-backend/packaging/HtmlPackage.h"
 #include <native-backend/parsing/TextProcessor.h>
+#include <native-backend/errors/errors.h>
 #include <fstream>
 #include <exception>
+
 
 boost::shared_ptr<nvb::HtmlPackage> nvb::HtmlPackage::createShared() {
     return boost::shared_ptr<nvb::HtmlPackage>(new HtmlPackage());
@@ -13,13 +15,18 @@ boost::shared_ptr<nvb::HtmlPackage> nvb::HtmlPackage::createShared() {
 
 void nvb::HtmlPackage::load(std::string path) {
     std::ifstream ifstream;
-    ifstream.open(path.c_str(), std::ifstream::in);
+    ifstream.open(path.c_str(), std::ios::binary | std::ios::ate);
 
-    ifstream.seekg(std::ifstream::end);
+    if(!ifstream.good())
+        throw nvb::error::invalid_argument_error("The file at path + \"" + path + "\" could not be loaded!");
+
     std::streamsize size = ifstream.tellg();
     ifstream.seekg(0);
 
-    ifstream.read(&data_.at(0), size);
+    char buf[size + 1] {0};
+    ifstream.read(buf, size);
+    data_ = std::string(buf);
+    ifstream.close();
 }
 
 void nvb::HtmlPackage::loadRawHtml(std::string html) {
