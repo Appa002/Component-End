@@ -1,0 +1,15 @@
+project(packaging_HtmlBundle_tests)
+
+set(CMAKE_CXX_STANDARD ${GLOBAL_CXX_STANDARD})
+set(Boost_ADDITIONAL_VERSIONS ${GLOBAL_BOOST_VERSION} ${GLOBAL_BOOST_ADDITIONAL_VERSION})
+find_package(Boost ${GLOBAL_BOOST_VERSION} REQUIRED COMPONENTS unit_test_framework system)
+
+add_executable(packaging_HtmlBundle_tests_test_executable tests.cpp)
+target_include_directories(packaging_HtmlBundle_tests_test_executable PRIVATE ${Boost_INCLUDE_DIRS})
+include_directories(packaging_HtmlBundle_tests_test_executable ../../../header)
+target_compile_definitions(packaging_HtmlBundle_tests_test_executable PRIVATE "BOOST_TEST_DYN_LINK=1")
+
+target_link_libraries(packaging_HtmlBundle_tests_test_executable ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+target_link_libraries(packaging_HtmlBundle_tests_test_executable native-backend)
+
+add_test(NAME packaging_HtmlBundle_tests_test_executable COMMAND packaging_HtmlBundle_tests_test_executable)
