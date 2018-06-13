@@ -32,15 +32,7 @@ target_link_libraries(native-backend ${Boost_THREAD_LIBRARY})
 target_link_libraries(native-backend ${Boost_REGEX_LIBRARY})
 #target_compile_definitions(widget_Widget_tests_test_executable PRIVATE "BOOST_TEST_DYN_LINK=1")
 
-
-add_subdirectory(tests/parsing/RequestInformation)
-add_subdirectory(tests/parsing/TextProcessor)
-
-add_subdirectory(tests/server/Server)
-add_subdirectory(tests/server/TcpConnection)
-
-add_subdirectory(tests/packaging/HtmlBundle)
-
-add_subdirectory(tests/utils/Singleton)
-
-add_subdirectory(tests/routing/Router)
+file(GLOB TESTS_DIRECTORYS tests/*/*/)
+foreach(IT ${TESTS_DIRECTORYS})
+    add_subdirectory(${IT})
+endforeach()
