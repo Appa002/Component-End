@@ -9,6 +9,8 @@
 nvb::Server::Server(unsigned short port, boost::asio::io_context& io_context) :
         acceptor(io_context, tcp::endpoint(tcp::v4(), port)) {
     start_accept();
+
+    onNewConnection = Signal<int>::createShared();
 }
 
 /*!\brief Sets up all objects to receive incoming http/tcp traffic.
@@ -28,6 +30,7 @@ void nvb::Server::start_accept() {
  * It also calls start_accept to make it listen for new clients.*/
 void nvb::Server::handle_accept(TcpConnection::shared_ptr_t new_connection,
                                            const boost::system::error_code& error) {
+    onNewConnection->emit(1);
     if(!error){
         new_connection->start();
     }
@@ -36,9 +39,6 @@ void nvb::Server::handle_accept(TcpConnection::shared_ptr_t new_connection,
 
 /*!\brief Creates a new server and makes it listen.
  * Returns that sever as a boost unique_ptr*/
-boost::movelib::unique_ptr<nvb::Server> nvb::Server::create(unsigned short port) {
-    boost::asio::io_context io_context;
-    boost::movelib::unique_ptr<Server> server (new Server(port, io_context));
-    io_context.run();
-    return server;
+boost::movelib::unique_ptr<nvb::Server> nvb::Server::create(unsigned short port, boost::asio::io_context& io_context) {
+    return boost::movelib::unique_ptr<Server> (new Server(port, io_context));
 }
