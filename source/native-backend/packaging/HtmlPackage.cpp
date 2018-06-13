@@ -40,7 +40,7 @@ void nvb::HtmlPackage::addChild(std::string key, boost::shared_ptr<nvb::HtmlPack
 std::string nvb::HtmlPackage::get() {
     std::unordered_map<std::string, std::string> replacements;
     for(auto& child : children_){
-        replacements[child.first] = child.second->get();
+        replacements["{{" + child.first + "}}"] = child.second->get();
     }
 
     std::string out = data_;
