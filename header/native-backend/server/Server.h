@@ -12,6 +12,7 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <native-backend/server/TcpConnection.h>
+#include <native-backend/interface/Signal.h>
 
 using boost::asio::ip::tcp;
 
@@ -29,7 +30,9 @@ namespace nvb {
                            const boost::system::error_code& error);
 
     public:
-        static boost::movelib::unique_ptr<Server> create(unsigned short port);
+        static boost::movelib::unique_ptr<Server> create(unsigned short port, boost::asio::io_context& io_context);
+
+        nvb::Signal<int>::signal_t onNewConnection;
     };
 }
 
